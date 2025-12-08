@@ -1,12 +1,25 @@
 import { useEffect, useState } from "react";
 import { ShoppingCart, ChevronLeft, ChevronRight } from "lucide-react";
 import { useCartStore } from "../stores/useCartStore";
+import { useUserStore } from "../stores/useUserStore"; // 1. Import User Store
+import toast from "react-hot-toast"; // 2. Import Toast
 
 const FeaturedProducts = ({ featuredProducts }) => {
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [itemsPerPage, setItemsPerPage] = useState(4);
 
 	const { addToCart } = useCartStore();
+	const { user } = useUserStore(); // 3. Get user from store
+
+    // 4. Create the handler that accepts 'product' as an argument
+    const handleAddToCart = (product) => {
+        if (!user) {
+            toast.error("Please login to add products to cart", { id: "login" });
+            return;
+        } else {
+            addToCart(product);
+        }
+    };
 
 	useEffect(() => {
 		const handleResize = () => {
